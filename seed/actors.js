@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const { Actor } = require('../models');
-const connectDB = require('../db');
+const { Movie, Actor } = require('../models');
+const db = require('../db');
 
-const seedActors = async () => {
-  await connectDB();
+const main = async () => {
+  await db();
 
   const actors = [
     { name: 'Actor One', age: 30, alive: true },
@@ -16,7 +16,12 @@ const seedActors = async () => {
 
   await Actor.insertMany(actors);
   console.log('Actors seeded!');
-  process.exit();
+  db.close();
 };
 
-seedActors();
+const run = async () => {
+  await main()
+  db.close()
+}
+
+run()

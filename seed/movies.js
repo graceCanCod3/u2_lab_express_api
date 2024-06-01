@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const { Movie } = require('../models');
-const connectDB = require('../db');
+const db = require('../db')
+const { Movie } = require('../models')
 
-const seedMovies = async () => {
-  await connectDB();
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+const main = async () => {
 
   const movies = [
     { title: 'Movie One', runtime: 120, rating: 'PG-13', yearReleased: 2020, description: 'Description of movie one' },
@@ -17,11 +17,17 @@ const seedMovies = async () => {
     { title: 'Movie Nine', runtime: 190, rating: 'NR', yearReleased: 1989, description: 'Description of movie nine' },
     { title: 'Movie Ten', runtime: 120, rating: 'G', yearReleased: 2024, description: 'Description of movie ten' },
 
-  ];
+  ]
+
 
   await Movie.insertMany(movies);
   console.log('Movies seeded!');
-  process.exit();
-};
+  
+}
 
-seedMovies();
+const run = async () => {
+  await main() 
+  db.close()
+}
+
+run();

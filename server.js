@@ -1,22 +1,35 @@
 const express = require('express');
-const connectDB = require('./db');
+const db = require('./db');
+const cors = require('cors');
 const movieControllers = require('./controllers/movieControllers');
 const actorControllers = require('./controllers/actorControllers');
 const reviewControllers = require('./controllers/reviewControllers');
 
 const app = express();
 
-// Connect Database
-connectDB();
+const logger = require('morgan');
+const bodyParser = require('body-parser')
+const PORT = process.env.PORT || 3001
 
-// Init Middleware
-app.use(express.json());
+app.use(logger('dev'))
+app.use(bodyParser.json())
 
-// Define Routes
-app.use('/api/movies', movieControllers);
-app.use('/api/actors', actorControllers);
-app.use('/api/reviews', reviewControllers);
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`))
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.get('/', (request, response) => {
+    response.send({ msg: 'Server Running' })
+  })
+
+app.get('/actors', actorControllers.getActors)
+app.get('/actors/:id', actorControllers.getActor)
+app.get('/movies', movieControllers.getMovies)
+app.get('/movies/:id', movieControllers.getMovie)
+app.get('/reviews', reviewControllers.getReviews)
+app.get('/reviews/:id', reviewControllers.getReview)
+
+
+//// Megan Marsh assisted with troubleshooting server.js

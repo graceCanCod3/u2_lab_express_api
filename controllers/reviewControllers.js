@@ -1,20 +1,19 @@
 const express = require('express');
-const controller = express.Controller();
-const { Review, Movie } = require('../models');
+const { Review, Movie } = require(`../models`);
 
-controller.get('/', async (req, res) => {
+const getReviews = async (req, res) => {
   try {
-    const reviews = await Review.find().populate('movie');
+    const reviews = await Review.find().populate(`movie`);
     res.json(reviews);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-});
+}
 
-controller.get('/:id', async (req, res) => {
+const getReview = async (req, res) => {
   try {
-    const review = await Review.findById(req.params.id).populate('movie');
+    const review = await Review.findById(req.params.id).populate(`movie`);
     if (!review) return res.status(404).json({ msg: 'Review not found' });
     res.json(review);
   } catch (err) {
@@ -24,9 +23,9 @@ controller.get('/:id', async (req, res) => {
     }
     res.status(500).send('Server Error');
   }
-});
+}
 
-controller.post('/', async (req, res) => {
+const postReview = async (req, res) => {
   const { movie, score, comment } = req.body;
   try {
     const newReview = new Review({
@@ -46,6 +45,10 @@ controller.post('/', async (req, res) => {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-});
+}
 
-module.exports = controller;
+module.exports = {
+  getReviews,
+  getReview,
+  postReview
+}
